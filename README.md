@@ -2,8 +2,8 @@
 
 **An 8086 Assembly and Desktop-GUI Implementation**
 
-CS-234 Computer Organization and Assembly Language — NUST SEECS  
-Mustafa Shahid | BSCS-14B | CMS ID: 500889  
+CS-234 Computer Organization and Assembly Language — NUST SEECS
+Mustafa Shahid | BSCS-14B | CMS ID: 500889
 Faculty: Dr. Omar Zeb & Sir Ijaz Alam Khan
 
 ## Abstract
@@ -26,33 +26,18 @@ Both implementations faithfully reproduce ITU-R M.1677-1 Morse timing and were t
 ## System Architecture
 
 The system is partitioned into four layers, present in both the assembly program and the desktop app:
-              +----------------------+
-              |   User Interface     |
-              |   (INT 21h / GUI)    |
-              +----------------------+
-                        |
-                        v
-              +----------------------+
-              |  Translation Engine  |
-              |  (ASCII -> Morse)    |
-              +----------------------+
-                        |
-                        v
- +----------------------+   +----------------------+
- |  Input/Output Buffer  |   |  Morse Lookup Table  |
- |  (DS:input_buffer)    |   |  (6-byte records)    |
- +----------------------+   +----------------------+
-                        |
-                        v
-              +----------------------+
-              |   Signal Generator   |
-              |  (Beep / INT 21h/02) |
-              +----------------------+
-          
+
+1. **User Interface** (`INT 21h` / GUI) — handles input and output.
+2. **Translation Engine** (ASCII → Morse) — performs the character lookup.
+3. **Shared Data** — the Input/Output Buffer (`DS:input_buffer`) and the Morse Lookup Table (6-byte records).
+4. **Signal Generator** (Beep / `INT 21h`/02h) — turns dot/dash symbols into audio pulses.
+
+Flow: User Interface → Translation Engine → (reads from) Morse Lookup Table and (writes to) Input/Output Buffer → Signal Generator produces the audible output.
+
 ## 1. Assembly Program (8086)
 
 - Lookup table in the data segment: each entry is 6 bytes (5 bytes Morse code, space-padded, + 1 length byte).
-- Constant-time addressing: `addr = morse_table + (index_of(c) × 6)`, accessed via `MOV DL, [BX + DI]`.
+- Constant-time addressing: `addr = morse_table + (index_of(c) x 6)`, accessed via `MOV DL, [BX + DI]`.
 - Letters mapped via ASCII offset from `'A'`; digits mapped to slots 26–35; lowercase normalized to uppercase with `AND AL, 0DFh`.
 - I/O handled through DOS interrupts: `INT 21h` functions `09h` (print string), `0Ah` (buffered input), `02h` (character output), `4Ch` (terminate).
 - Unsupported characters are silently skipped for robustness.
@@ -92,10 +77,11 @@ Additional features: adjustable tone frequency (300–1500 Hz) and unit duration
 
 ### Assembly Program
 
-Assemble and run using an 8086 emulator such as **emu8086**, **MASM**, or **TASM**.
-Open the .asm source file in emu8086
-Compile
-Run and follow the on-screen prompt
+Assemble and run using an 8086 emulator such as **emu8086**, **MASM**, or **TASM**:
+
+1. Open the `.asm` source file in emu8086.
+2. Compile.
+3. Run and follow the on-screen prompt.
 
 ### Desktop Application
 
