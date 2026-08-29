@@ -26,23 +26,29 @@ Both implementations faithfully reproduce ITU-R M.1677-1 Morse timing and were t
 ## System Architecture
 
 The system is partitioned into four layers, present in both the assembly program and the desktop app:
-+---------------------+ +----------------------+
-| User Interface | <---> | Translation Engine |
-| (INT 21h / GUI) | | (ASCII -> Morse) |
-+---------------------+ +----------------------+
-| |
-v v
-+---------------------+ +----------------------+
-| Input/Output Buffer| | Morse Lookup Table |
-| (DS:input_buffer) | | (6-byte records) |
-+---------------------+ +----------------------+
-|
-v
-+----------------------+
-| Signal Generator |
-| (Beep / INT 21h/02) |
-+----------------------+
-
+              +----------------------+
+              |   User Interface     |
+              |   (INT 21h / GUI)    |
+              +----------------------+
+                        |
+                        v
+              +----------------------+
+              |  Translation Engine  |
+              |  (ASCII -> Morse)    |
+              +----------------------+
+                        |
+                        v
+ +----------------------+   +----------------------+
+ |  Input/Output Buffer  |   |  Morse Lookup Table  |
+ |  (DS:input_buffer)    |   |  (6-byte records)    |
+ +----------------------+   +----------------------+
+                        |
+                        v
+              +----------------------+
+              |   Signal Generator   |
+              |  (Beep / INT 21h/02) |
+              +----------------------+
+          
 ## 1. Assembly Program (8086)
 
 - Lookup table in the data segment: each entry is 6 bytes (5 bytes Morse code, space-padded, + 1 length byte).
@@ -87,7 +93,6 @@ Additional features: adjustable tone frequency (300–1500 Hz) and unit duration
 ### Assembly Program
 
 Assemble and run using an 8086 emulator such as **emu8086**, **MASM**, or **TASM**.
-Example with emu8086
 Open the .asm source file in emu8086
 Compile
 Run and follow the on-screen prompt
